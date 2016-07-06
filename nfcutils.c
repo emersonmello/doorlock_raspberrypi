@@ -76,6 +76,8 @@ void initNFC() {
         .nmt = NMT_ISO14443A,
         .nbr = NBR_106,
     };
+
+    
     printf("Polling for target...\n");
     while (nfc_initiator_select_passive_target(pnd, nmMifare, NULL, 0, &nt) <= 0);
     printf("Target detected!\n");

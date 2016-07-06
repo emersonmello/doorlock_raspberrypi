@@ -12,6 +12,8 @@
 #include "rp_settings.h"
 #include "curlutils.h"
 #include "nfcutils.h"
+#include <unistd.h>
+#include <limits.h>
 
 
 nfc_device *pnd;
@@ -64,8 +66,8 @@ void nfcProtocol() {
     printf("Application selected!\n");
 
     if (strncmp(rapdu, DOOR_HELLO, (int) rapdulen)) {
-        printf("I'm expecting HELLO msg, but card sent to me: %s. len: %d", response, (int) rapdulen);
-        exit(EXIT_FAILURE); // TODO, handle this error instead of exit
+        printf("** Opss ** I'm expecting HELLO msg, but card sent to me: %s. len: %d\n", response, (int) rapdulen);
+        return;
     }
 
     // FIDO Auth Request Message
@@ -73,11 +75,17 @@ void nfcProtocol() {
     chunk = getHttpRequest(UAFMessage);
 
     if (chunk.size <= 0) {
-        printf("size: [%ld], message: %s\n", (long) chunk.size, chunk.memory);
-        exit(EXIT_FAILURE); // TODO, handle this error instead of exit
+        printf("** Opss ** Error to connect to FIDO Server\n");
+        memcpy(capdu, "ERROR", 5);
+        capdulen = 5;
+        rapdulen = sizeof (rapdu);
+        if (CardTransmit(pnd, capdu, capdulen, rapdu, &rapdulen) < 0) {
+            printf("Error to sent error message to card...\n");
+        }
+        return;
     }
 
-    size_t blocks = (chunk.size / 259) + 1;
+    size_t blocks = (chunk.size / MAX_FRAME_SIZE) + 1;
 
     char *buffer[blocks];
     blockSplit(chunk.memory, buffer, blocks);
@@ -88,16 +96,17 @@ void nfcProtocol() {
     capdulen = strlen(message);
     rapdulen = sizeof (rapdu);
     if (CardTransmit(pnd, capdu, capdulen, rapdu, &rapdulen) < 0) {
-        printf("error\n");
-        exit(EXIT_FAILURE);
+        printf("Error....\n");
+        return;
     }
 
     int totalSent = 0;
 
     if (strncmp(rapdu, DOOR_NEXT, (int) rapdulen)) {
-        printf("I'm expecting NEXT msg, but card sent to me: %s. len: %d", response, (int) rapdulen);
-        exit(EXIT_FAILURE); // TODO, handle this error instead of exit
+        printf("** Opss ** I'm expecting NEXT msg, but card sent to me: %s. len: %d", response, (int) rapdulen);
+        return;
     }
+
     response = NULL;
     do { // Sending UAFRequestMessage to card
         memcpy(capdu, buffer[totalSent], strlen(buffer[totalSent]));
@@ -105,12 +114,12 @@ void nfcProtocol() {
         rapdulen = sizeof (rapdu);
         if (CardTransmit(pnd, capdu, capdulen, rapdu, &rapdulen) < 0) {
             printf("error\n");
-            exit(EXIT_FAILURE);
+            return;
         }
 
         if (strncmp(rapdu, DOOR_OK, (int) rapdulen)) {
-            printf("I'm expecting OK msg, but card sent to me: %s. len: %d", response, (int) rapdulen);
-            exit(EXIT_FAILURE); // TODO, handle this error instead of exit
+            printf("** Opss ** I'm expecting OK msg, but card sent to me: %s. len: %d", response, (int) rapdulen);
+            return;
         }
         response = NULL;
         totalSent++;
@@ -121,9 +130,12 @@ void nfcProtocol() {
     memcpy(capdu, DOOR_READY, sizeof (DOOR_READY));
     capdulen = strlen(DOOR_READY);
     rapdulen = sizeof (rapdu);
+    unsigned long timeout = LONG_MAX;
     do {
-        if (CardTransmit(pnd, capdu, capdulen, rapdu, &rapdulen) < 0)
-            exit(EXIT_FAILURE);
+        if (CardTransmit(pnd, capdu, capdulen, rapdu, &rapdulen) < 0) {
+            printf("Error...\n");
+            return;
+        }
 
         if (strncmp(rapdu, DOOR_WAIT, (int) rapdulen) == 0) {
             continue;
@@ -135,12 +147,18 @@ void nfcProtocol() {
             capdulen = strlen(DOOR_RESPONSE);
             rapdulen = sizeof (rapdu);
             if (CardTransmit(pnd, capdu, capdulen, rapdu, &rapdulen) < 0) {
-                printf("Error?");
-                exit(EXIT_FAILURE);
+                printf("Error RESPONSE...\n");
+                return;
             }
             break;
         }
-    } while (1);
+        timeout--;
+    } while (timeout > 0);
+
+    if (timeout == 0) {
+        printf("Error. Client is not responding...\n");
+        return;
+    }
 
     strncpy(message, rapdu, (int) rapdulen);
     char *p = strtok(message, ":");
@@ -149,7 +167,7 @@ void nfcProtocol() {
     if (strcmp(p, "BLOCK") == 0) {
         p = strtok(NULL, ":");
         val = strtol(p, &endptr, 10);
-        char UAFmsg[259 * val];
+        char UAFmsg[MAX_FRAME_SIZE * val];
         int pos = 0;
         do {
             printf("Sending NEXT!\n");
@@ -157,61 +175,74 @@ void nfcProtocol() {
             capdulen = strlen(DOOR_NEXT);
             rapdulen = sizeof (rapdu);
             if (CardTransmit(pnd, capdu, capdulen, rapdu, &rapdulen) < 0) {
-                exit(EXIT_FAILURE);
+                printf("Error NEXT\n");
+                return;
             }
-            //            strncpy(message, rapdu, (int) rapdulen);
-            //            message[(int) rapdulen +1] = '\0';
-            //            printf("message: %s\n", message);
             strncat(UAFmsg, rapdu, (int) rapdulen);
             val--;
         } while (val > 0);
         // FIDO Auth Request Message
         sprintf(UAFMessage, AUTH_REQUEST_MSG, SCHEME, HOSTNAME, PORT, AUTH_RESPONSE_ENDPOINT);
         curlFetchStruct *result = postHttpRequest(UAFMessage, UAFmsg);
-        
-        if (strstr(result->payload,"KEY_NOT_REGISTERED") != NULL){
+
+        if (result->size <= 0) {
+            printf("Error to connect to FIDO Server\n");
+            memcpy(capdu, "ERROR", 5);
+            capdulen = 5;
+            rapdulen = sizeof (rapdu);
+            if (CardTransmit(pnd, capdu, capdulen, rapdu, &rapdulen) < 0) {
+                printf("Error to send response to card\n");
+            }
+            return;
+        }
+
+        if (strstr(result->payload, "KEY_NOT_REGISTERED") != NULL) {
             printf("Access denied!\n");
             memcpy(capdu, DOOR_DENY, sizeof (DOOR_DENY));
             capdulen = strlen(DOOR_DENY);
             rapdulen = sizeof (rapdu);
             if (CardTransmit(pnd, capdu, capdulen, rapdu, &rapdulen) < 0) {
-                exit(EXIT_FAILURE);
+                return;
             }
-        }else{
+        } else {
             printf("Access granted!\n");
             memcpy(capdu, DOOR_GRANTED, sizeof (DOOR_GRANTED));
             capdulen = strlen(DOOR_GRANTED);
             rapdulen = sizeof (rapdu);
             if (CardTransmit(pnd, capdu, capdulen, rapdu, &rapdulen) < 0) {
-                exit(EXIT_FAILURE);
+                return;
             }
-            
+
         }
         strncpy(message, rapdu, (int) rapdulen);
-        if (strstr(message,"BYE") != NULL){
+        if (strstr(message, "BYE") != NULL) {
             printf("bye!\n");
-        }else{
+        } else {
             printf(":-(\n");
         }
     }
-
-    printf("end.\n");
-    nfc_close(pnd);
-    nfc_exit(context);
 }
 
 /*
  * 
  */
 int main(int argc, char** argv) {
-    nfc_init(&context);
-    if (context == NULL) {
-        printf("Unable to init libnfc (malloc)\n");
-        exit(EXIT_FAILURE);
-    }
 
-    nfcInitListen();
-    nfcProtocol();
+    while (1) {
+        nfc_init(&context);
+        if (context == NULL) {
+            printf("Unable to init libnfc (malloc)\n");
+            exit(EXIT_FAILURE);
+        }
+        nfcInitListen();
+        nfcProtocol();
+        printf("end.\n");
+        nfc_close(pnd);
+        nfc_exit(context);
+        printf("sleeping..\n");
+        sleep(2);
+        printf("starting again...\n");
+    }
 
     return (EXIT_SUCCESS);
 }

@@ -16,6 +16,8 @@ extern "C" {
 #include <sys/types.h>
 #include <netdb.h>
 
+#define MAX_FRAME_SIZE 250    
+    
 #define HOSTNAME "10.66.66.27"
 #define SCHEME "http://"
 #define PORT 8123
