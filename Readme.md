@@ -51,10 +51,13 @@
 
 ### Wiring Raspberry PI 2 B & PNB532
 
-- Raspberry pin 2 (5v) -- red wire -- > PNB532 FTDICABLE pin 5.0V
-- Raspberry pin 6 (ground) -- black wire -- > PNB532 FTDICABLE pin GND
-- Raspberry pin 8 (BCM 14 - TXD) -- yellow wire -- > PNB532 FTDICABLE pin TXD
-- Raspberry pin 10 (BCM 15 - RXD) -- green wire -- > PNB532 FTDICABLE pin RXD
+|Raspberry PI 2 B    | Wire color | PNB532 |
+|--------------------|:----------:|:------:|
+| Pin 2 (5v)         | RED        | 5.0V   |
+| Pin 6 (ground)     | BLACK      | GND    |
+| Pin 8 (BCM 14 TXD) | YELLOW     | TXD    |
+| Pin 10 (BCM 15 RXD)| GREEN      | RXD    |
+
 
 ![alt text](hw-wiring.png "Wiring raspberry PI 2 B & PNB532")
 
