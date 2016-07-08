@@ -1,6 +1,15 @@
-# Doorlock card reader for Raspberry PI
+# Doorlock NFC card reader for Raspberry PI
 
-## Requirements
+## Motivation
+
+Is it possible to use [FIDO UAF Standard](https://fidoalliance.org/specifications/download/) on an Android mobile + NFC to openning doors?
+
+This project is a simple prototype to verify how FIDO could be used in this scenario. This ***card reader*** uses NFC to communicate with a specific ***Android Openning Door App***, that emulates a NFC card using Android's [Host-based Card Emulation](https://developer.android.com/guide/topics/connectivity/nfc/hce.html) functionality. 
+
+The ***card reader*** and ***Android Openning Door App*** depend of a third-party, called **FIDO UAF RP Server**.
+
+
+## Setup requirements
 
 ### Hardware
 
@@ -16,13 +25,10 @@
 - [Json-c >= 0.10-1.2](https://github.com/json-c/json-c)
 
 
-## Setup
-
 ### Installing required packages
 
-	sudo apt-get install git build-essentials libusb-dev libcurl4-openssl-dev libjson0-dev
-	sudo apt-get install autoconf libtool libpcsclite-dev
-
+	sudo apt-get install git build-essentials libusb-dev libcurl4-openssl-dev libjson0-dev autoconf libtool libpcsclite-dev
+    
 
 ### Freeing UART on the Raspberry PI running Raspbian GNU/Linux 7
 
@@ -36,10 +42,12 @@
 
 ####Preparing the environment
 	
-	cd ~ && mkdir -p tmp && cd tmp && mkdir -p /etc/nfc/devices.d
+	cd ~ && mkdir -p /etc/nfc/devices.d
 	git clone https://github.com/nfc-tools/libnfc.git
 	cd libnfc
-	sudo cp contrib/libnfc/pn532_uart_on_rpi.conf.sample /etc/nfc/devices.d/pn532_uart_on_rpi.conf
+	
+    sudo cp contrib/libnfc/pn532_uart_on_rpi.conf.sample /etc/nfc/devices.d/pn532_uart_on_rpi.conf
+    
 	sudo echo "allow_instrusive_scan =  true" >> /etc/nfc/devices.d/pn532_uart_on_rpi.conf
 	
 ####Run config & build
@@ -51,6 +59,10 @@
 
 ### Wiring Raspberry PI 2 B & PNB532
 
+1. To use UART on PNB532 breakout you must set to **OFF** the **SEL0** and **SEL1** jumpers
+1. Follow instructions (and picture) below
+
+
 |Raspberry PI 2 B    | Wire color | PNB532 |
 |--------------------|:----------:|:------:|
 | Pin 2 (5v)         | RED        | 5.0V   |
@@ -60,6 +72,15 @@
 
 
 ![alt text](hw-wiring.png "Wiring raspberry PI 2 B & PNB532")
+
+### Testing
+
+You can test your setup reading an ISO14443-A card using `nfc-poll` program that came with `libnfc`. Place a card on the reader and run the command:
+
+
+    cd ~/libnfc/examples
+    ./nfc-poll
+
 
 
 
