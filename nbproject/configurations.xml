@@ -7,6 +7,7 @@
       <itemPath>curlutils.h</itemPath>
       <itemPath>nfcutils.h</itemPath>
       <itemPath>rp_settings.h</itemPath>
+      <itemPath>wiring-gpio.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -18,6 +19,7 @@
       <itemPath>curutils.c</itemPath>
       <itemPath>main.c</itemPath>
       <itemPath>nfcutils.c</itemPath>
+      <itemPath>wiring-gpio.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -50,6 +52,7 @@
             <linkerOptionItem>`pkg-config --libs libnfc`</linkerOptionItem>
             <linkerOptionItem>`pkg-config --libs json`</linkerOptionItem>
           </linkerLibItems>
+          <commandLine>-lwiringPi</commandLine>
         </linkerTool>
       </compileType>
       <item path="Readme.md" ex="false" tool="3" flavor2="0">
@@ -65,6 +68,10 @@
       <item path="nfcutils.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="rp_settings.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="wiring-gpio.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="wiring-gpio.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="1">
@@ -101,6 +108,10 @@
       <item path="nfcutils.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="rp_settings.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="wiring-gpio.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="wiring-gpio.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>

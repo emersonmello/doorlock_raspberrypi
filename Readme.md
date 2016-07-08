@@ -16,6 +16,10 @@ The ***card reader*** and ***Android Openning Door App*** depend of a third-part
 - [Raspberry PI 2 B](https://www.raspberrypi.org/products/raspberry-pi-2-model-b/)
 - [Adafruit PN532](https://www.adafruit.com/products/364)
 - A simple Breadboard to connect raspberry and PN532
+- MOSFET transistor - https://www.adafruit.com/products/355
+- Lock-style solenoid - https://www.adafruit.com/product/1512
+- 02 resistors - 300 Ohms
+- 02 LED (red and green)
 
 
 ### Software
@@ -23,6 +27,7 @@ The ***card reader*** and ***Android Openning Door App*** depend of a third-part
 - [Libcurl](https://curl.haxx.se/libcurl/)
 - [Libnfc >= 1.7.1](https://github.com/nfc-tools/libnfc) 
 - [Json-c >= 0.10-1.2](https://github.com/json-c/json-c)
+- [wiringPi library](http://wiringpi.com/)
 
 
 ### Installing required packages
@@ -55,6 +60,10 @@ The ***card reader*** and ***Android Openning Door App*** depend of a third-part
 	autoreconf -vis
 	./configure --with-drivers=pn532_uart --sysconfdir=/etc --prefix=/usr
 	sudo make clean && sudo make install all
+
+### Installing wiringPi from source
+
+- Follow the instructions provided by [official website](http://wiringpi.com/download-and-install). 
 
 
 ### Wiring Raspberry PI 2 B & PNB532

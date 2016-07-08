@@ -14,6 +14,7 @@
 #include "nfcutils.h"
 #include <unistd.h>
 #include <limits.h>
+#include "wiring-gpio.h"
 
 
 nfc_device *pnd;
@@ -212,7 +213,8 @@ void nfcProtocol() {
             if (CardTransmit(pnd, capdu, capdulen, rapdu, &rapdulen) < 0) {
                 return;
             }
-
+            doorlock(1);
+            doorlock(0);
         }
         strncpy(message, rapdu, (int) rapdulen);
         if (strstr(message, "BYE") != NULL) {
@@ -227,6 +229,11 @@ void nfcProtocol() {
  * 
  */
 int main(int argc, char** argv) {
+
+    // About GPIO & wiringPI Lib
+    setupWiring();
+
+
 
     while (1) {
         nfc_init(&context);

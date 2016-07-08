@@ -186,8 +186,8 @@ struct curl_fetch_st *postHttpRequest(char *url, char *payload) {
 
         /* check payload */
         if (cf->payload != NULL) {
-            /* print result */
-            printf("CURL Returned: \n%s\n", cf->payload);
+            /* debug -  print result */
+            // printf("CURL Returned: \n%s\n", cf->payload);
             /* parse return */
             json = json_tokener_parse_verbose(cf->payload, &jerr);
             /* free payload */
@@ -200,7 +200,6 @@ struct curl_fetch_st *postHttpRequest(char *url, char *payload) {
             /* return */
             //return NULL;
         }
-
         /* check error */
         if (jerr != json_tokener_success) {
             /* error */
@@ -210,20 +209,10 @@ struct curl_fetch_st *postHttpRequest(char *url, char *payload) {
             /* return */
             //return NULL;
         }
-
         /* debugging */
-        printf("Parsed JSON: %s\n", json_object_to_json_string(json));
-
-        /* exit */
-        
+        //printf("Parsed JSON: %s\n", json_object_to_json_string(json));
     }
     return cf;
-//    int s = strlen(json_object_to_json_string(json));
-//    char *res = realloc(&res, sizeof (char) * s);
-//    strncpy(res, json_object_to_json_string(json), s);
-//
-//    return res;
-
 }
 
 memoryStruct getHttpRequest(char *url) {
@@ -246,8 +235,8 @@ memoryStruct getHttpRequest(char *url) {
         /* we pass our 'chunk' struct to the callback function */
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
 
-        //        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 100000);
-        //         curl_easy_setopt(curl, CURLOPT_LOW_SPEED_LIMIT, long speedlimit); 
+        //curl_easy_setopt(curl, CURLOPT_TIMEOUT, 100000);
+        //curl_easy_setopt(curl, CURLOPT_LOW_SPEED_LIMIT, long speedlimit); 
 
         /* Perform the request, res will get the return code */
         res = curl_easy_perform(curl);

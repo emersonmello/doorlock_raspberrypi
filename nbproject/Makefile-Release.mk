@@ -37,7 +37,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/curutils.o \
 	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/nfcutils.o
+	${OBJECTDIR}/nfcutils.o \
+	${OBJECTDIR}/wiring-gpio.o
 
 
 # C Compiler Flags
@@ -78,6 +79,11 @@ ${OBJECTDIR}/nfcutils.o: nfcutils.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -std=c99 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/nfcutils.o nfcutils.c
+
+${OBJECTDIR}/wiring-gpio.o: wiring-gpio.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -std=c99 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/wiring-gpio.o wiring-gpio.c
 
 # Subprojects
 .build-subprojects:
