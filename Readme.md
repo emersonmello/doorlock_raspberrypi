@@ -4,9 +4,19 @@
 
 Is it possible to use [FIDO UAF Standard](https://fidoalliance.org/specifications/download/) on an Android mobile + NFC to openning doors?
 
-This project is a simple prototype to verify how FIDO could be used in this scenario. This ***card reader*** uses NFC to communicate with a specific ***Android Openning Door App***, that emulates a NFC card using Android's [Host-based Card Emulation](https://developer.android.com/guide/topics/connectivity/nfc/hce.html) functionality. 
+This project is a simple prototype to verify how FIDO could be used in this scenario. This [card reader](https://github.com/emersonmello/doorlock_raspberrypi) uses NFC to communicate with a specific [Android Openning Door App](https://github.com/emersonmello/openingdoor), that emulates a NFC card using Android's [Host-based Card Emulation](https://developer.android.com/guide/topics/connectivity/nfc/hce.html) functionality. 
 
-The ***card reader*** and ***Android Openning Door App*** depend of a third-party, called **FIDO UAF RP Server**.
+The [card reader](https://github.com/emersonmello/doorlock_raspberrypi) and [Android Openning Door App](https://github.com/emersonmello/openingdoor) depend of a third-party, called [FIDO UAF RP Server](https://github.com/emersonmello/UAF).
+
+Figure below shows all necessary components and the relation between them
+
+![alt text](components.png "Communication diagram")
+
+1. [FIDO UAF Demo Server](https://github.com/emersonmello/UAF)
+  - If you prefer, there is a [Docker container](https://www.docker.com/what-docker) ready to use here: https://github.com/emersonmello/docker-fidouafserver
+1. [Door lock NFC card reader](https://github.com/emersonmello/doorlock_raspberrypi) - You are already here!
+1. [Dummy FIDO UAF Client](https://github.com/emersonmello/dummyuafclient)
+1. [Opening Door Android App](https://github.com/emersonmello/openingdoor)
 
 
 ## Setup requirements
@@ -32,7 +42,8 @@ The ***card reader*** and ***Android Openning Door App*** depend of a third-part
 
 ### Installing required packages
 
-	sudo apt-get install git build-essentials libusb-dev libcurl4-openssl-dev libjson0-dev autoconf libtool libpcsclite-dev
+	sudo apt-get install git build-essentials autoconf libtool libpcsclite-dev
+	sudo apt-get install libusb-dev libcurl4-openssl-dev libjson0-dev 
     
 
 ### Freeing UART on the Raspberry PI running Raspbian GNU/Linux 7
@@ -90,7 +101,9 @@ You can test your setup reading an ISO14443-A card using `nfc-poll` program that
     cd ~/libnfc/examples
     ./nfc-poll
 
+### Running FIDO UAF Server, Card Reader and Opening Door Android Application
 
+Follow steps showed [here](Setup.md)
 
 
 ## References
