@@ -28,4 +28,7 @@ Figure below shows all necessary components and the relation between them.
 1. Tap your mobile phone on "NFC reader"
 1. Follow the instructions provided by application (i.e. put your finger on the sensor, etc.) and you should see the message "Access Granted"
 
+## UML Sequence Diagram 
+
+![alt text](sd_door\ lock.png "Communication diagram")
 
