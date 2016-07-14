@@ -16,7 +16,9 @@ void blockSplit(const char* input, char **result, size_t block) {
     size_t pos = 0;
     for (; pos < block; pos++) {
         result[pos] = malloc(sizeof (char) * len);
+        result[pos][len] = '\0';
         subString(input, offset, len, result[pos]);
+        int j = pos;
         offset += BLOCK_SIZE;
         len = ((s - offset) < BLOCK_SIZE) ? s - offset : BLOCK_SIZE;
     }
@@ -36,8 +38,8 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp) {
 
     memcpy(&(mem->memory[mem->size]), contents, realsize);
     mem->size += realsize;
-    mem->memory[mem->size] = 0;
-
+    //mem->memory[mem->size] = 0;
+    mem->memory[mem->size] = '\0';
     return realsize;
 }
 

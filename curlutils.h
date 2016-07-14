@@ -28,7 +28,7 @@ struct curl_fetch_st {
     size_t size;
 } typedef curlFetchStruct;
 
-#define BLOCK_SIZE 259
+#define BLOCK_SIZE 250
 char* subString (const char* input, int offset, int len, char* dest);
 void blockSplit(const char* input, char **result, size_t block);
 static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp);

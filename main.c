@@ -76,12 +76,11 @@ void nfcInitListen() {
 void nfcProtocol() {
     char message[1024];
     char UAFMessage[2048];
-    char cardResponse[15];
     memoryStruct chunk;
 
     uint8_t capdu[264];
     size_t capdulen;
-    uint8_t rapdu[4096];
+    uint8_t rapdu[264];
     size_t rapdulen;
     char *response = 0;
 
@@ -131,12 +130,13 @@ void nfcProtocol() {
     blockSplit(chunk.memory, buffer, blocks);
     sprintf(message, "BLOCK:%ld", blocks);
     printf("Sending number of blocks: %s\n", message);
-
+    free(chunk.memory);
+    
     memcpy(capdu, message, strlen(message));
     capdulen = strlen(message);
     rapdulen = sizeof (rapdu);
     if (CardTransmit(pnd, capdu, capdulen, rapdu, &rapdulen) < 0) {
-        printf("Error....\n");
+        printf("Error to send number of blocks\n");
         return;
     }
 
@@ -153,7 +153,8 @@ void nfcProtocol() {
         capdulen = strlen(buffer[totalSent]);
         rapdulen = sizeof (rapdu);
         if (CardTransmit(pnd, capdu, capdulen, rapdu, &rapdulen) < 0) {
-            printf("error\n");
+            int i = strlen(buffer[totalSent]);
+            printf("error to send UAFRequestMessage to card. Message size: %d, message: %s\n", i, buffer[totalSent]);
             return;
         }
 
@@ -162,11 +163,11 @@ void nfcProtocol() {
             return;
         }
         response = NULL;
+        free(buffer[totalSent]);
         totalSent++;
     } while (totalSent < blocks);
-    for(int i =0; i < blocks; i++){
-        free(buffer[i]);
-    }
+    
+    
     printf("Sending READY!\n");
     memcpy(capdu, DOOR_READY, sizeof (DOOR_READY));
     capdulen = strlen(DOOR_READY);
@@ -174,7 +175,7 @@ void nfcProtocol() {
     unsigned long timeout = LONG_MAX;
     do {
         if (CardTransmit(pnd, capdu, capdulen, rapdu, &rapdulen) < 0) {
-            printf("Error...\n");
+            printf("Error to received WAIT\n");
             return;
         }
 
