@@ -18,9 +18,9 @@ extern "C" {
 
 #define MAX_FRAME_SIZE 250    
     
-#define HOSTNAME "10.66.66.27"
+#define HOSTNAME "incident01.ncl.ac.uk"
 #define SCHEME "http://"
-#define PORT 8123
+#define PORT 8000
 #define REG_REQUEST_ENDPOINT "/fidouaf/v1/public/regRequest"
 #define REG_RESPONSE_ENDPOINT "/fidouaf/v1/public/regResponse"
 #define REG_REQUEST_MSG "%s%s:%d%s/%s"
