@@ -17,8 +17,8 @@ void blockSplit(const char* input, char **result, size_t block) {
     for (; pos < block; pos++) {
         result[pos] = malloc(sizeof (char) * len);
         subString(input, offset, len, result[pos]);
-        offset += 259;
-        len = ((s - offset) < 259) ? s - offset : 259;
+        offset += BLOCK_SIZE;
+        len = ((s - offset) < BLOCK_SIZE) ? s - offset : BLOCK_SIZE;
     }
 }
 

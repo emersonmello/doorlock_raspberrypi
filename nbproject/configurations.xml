@@ -5,7 +5,6 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>curlutils.h</itemPath>
-      <itemPath>nfcutils.h</itemPath>
       <itemPath>rp_settings.h</itemPath>
       <itemPath>wiring-gpio.h</itemPath>
     </logicalFolder>
@@ -18,7 +17,6 @@
                    projectFiles="true">
       <itemPath>curutils.c</itemPath>
       <itemPath>main.c</itemPath>
-      <itemPath>nfcutils.c</itemPath>
       <itemPath>wiring-gpio.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -63,10 +61,6 @@
       </item>
       <item path="main.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="nfcutils.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="nfcutils.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="rp_settings.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="wiring-gpio.c" ex="false" tool="0" flavor2="0">
@@ -102,10 +96,6 @@
       <item path="curutils.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="main.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="nfcutils.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="nfcutils.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="rp_settings.h" ex="false" tool="3" flavor2="0">
       </item>

@@ -15,8 +15,6 @@ extern "C" {
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netdb.h>
-
-#define MAX_FRAME_SIZE 250    
     
 #define HOSTNAME "incident01.ncl.ac.uk"
 #define SCHEME "http://"

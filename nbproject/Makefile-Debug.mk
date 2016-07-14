@@ -37,7 +37,6 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/curutils.o \
 	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/nfcutils.o \
 	${OBJECTDIR}/wiring-gpio.o
 
 
@@ -74,11 +73,6 @@ ${OBJECTDIR}/main.o: main.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -g `pkg-config --cflags libcurl` `pkg-config --cflags libnfc` `pkg-config --cflags json` -std=c99  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.c
-
-${OBJECTDIR}/nfcutils.o: nfcutils.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -g `pkg-config --cflags libcurl` `pkg-config --cflags libnfc` `pkg-config --cflags json` -std=c99  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/nfcutils.o nfcutils.c
 
 ${OBJECTDIR}/wiring-gpio.o: wiring-gpio.c 
 	${MKDIR} -p ${OBJECTDIR}

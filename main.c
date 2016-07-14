@@ -8,18 +8,56 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <limits.h>
 #include <nfc/nfc.h>   
 #include "rp_settings.h"
 #include "curlutils.h"
-#include "nfcutils.h"
-#include <unistd.h>
-#include <limits.h>
 #include "wiring-gpio.h"
 
 
 nfc_device *pnd;
 nfc_target nt;
 nfc_context *context;
+
+char *charToHex(char *str) {
+    int size = strlen(str);
+    int i;
+    char *buf_str = (char *) malloc(4 * size + 1);
+    char *buf_ptr = buf_str;
+
+    for (i = 0; i < size; i++) {
+        buf_ptr += sprintf(buf_ptr, "\\x%02X", str[i]);
+    }
+    sprintf(buf_ptr, "\n");
+    *(buf_ptr + 1) = '\0';
+    return buf_ptr;
+}
+
+int CardTransmit(nfc_device *pnd, uint8_t *capdu, size_t capdulen, uint8_t *rapdu, size_t *rapdulen) {
+    int res;
+    size_t szPos;
+    //    printf("=> ");
+    //    for (szPos = 0; szPos < capdulen; szPos++) {
+    //        printf("%hhx ", capdu[szPos]);
+    //    }
+    //    printf("\n");
+    if ((res = nfc_initiator_transceive_bytes(pnd, capdu, capdulen, rapdu, *rapdulen, 500)) < 0) {
+        return -1;
+    } else {
+        *rapdulen = (size_t) res;
+        //        printf("<= ");
+        //        for (szPos = 0; szPos < *rapdulen; szPos++) {
+        //            printf("%hhx ", rapdu[szPos]);
+        //        }
+        //        printf("\n");
+        //        for (szPos = 0; szPos < *rapdulen; szPos++) {
+        //            printf("%c", (char) rapdu[szPos]);
+        //        }
+        //        printf("len: %d\n", *rapdulen);
+        return 0;
+    }
+}
 
 void nfcInitListen() {
     const char *acLibnfcVersion = nfc_version();
@@ -72,6 +110,7 @@ void nfcProtocol() {
     }
 
     // FIDO Auth Request Message
+    printf("Doing AuthRequest to FIDO UAF Server\n");
     sprintf(UAFMessage, AUTH_REQUEST_MSG, SCHEME, HOSTNAME, PORT, AUTH_REQUEST_ENDPOINT);
     chunk = getHttpRequest(UAFMessage);
 
@@ -86,7 +125,7 @@ void nfcProtocol() {
         return;
     }
 
-    size_t blocks = (chunk.size / MAX_FRAME_SIZE) + 1;
+    size_t blocks = (chunk.size / BLOCK_SIZE) + 1;
 
     char *buffer[blocks];
     blockSplit(chunk.memory, buffer, blocks);
@@ -125,8 +164,9 @@ void nfcProtocol() {
         response = NULL;
         totalSent++;
     } while (totalSent < blocks);
-
-
+    for(int i =0; i < blocks; i++){
+        free(buffer[i]);
+    }
     printf("Sending READY!\n");
     memcpy(capdu, DOOR_READY, sizeof (DOOR_READY));
     capdulen = strlen(DOOR_READY);
@@ -168,8 +208,8 @@ void nfcProtocol() {
     if (strcmp(p, "BLOCK") == 0) {
         p = strtok(NULL, ":");
         val = strtol(p, &endptr, 10);
-        char UAFmsg[MAX_FRAME_SIZE * val];
-        int pos = 0;
+        char *UAFmsg = malloc(sizeof (char) * BLOCK_SIZE * val + 1);
+        UAFmsg[0] = '\0';
         do {
             printf("Sending NEXT!\n");
             memcpy(capdu, DOOR_NEXT, sizeof (DOOR_NEXT));
@@ -183,8 +223,10 @@ void nfcProtocol() {
             val--;
         } while (val > 0);
         // FIDO Auth Request Message
+        printf("Forwarding card response to FIDO UAF Server\n");
         sprintf(UAFMessage, AUTH_REQUEST_MSG, SCHEME, HOSTNAME, PORT, AUTH_RESPONSE_ENDPOINT);
         curlFetchStruct *result = postHttpRequest(UAFMessage, UAFmsg);
+        free(UAFmsg);
 
         if (result->size <= 0) {
             printf("Error to connect to FIDO Server\n");
@@ -243,10 +285,8 @@ int main(int argc, char** argv) {
         }
         nfcInitListen();
         nfcProtocol();
-        printf("end.\n");
         nfc_close(pnd);
         nfc_exit(context);
-        printf("sleeping..\n");
         sleep(2);
         printf("starting again...\n");
     }
