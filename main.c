@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
 #include <limits.h>
 #include <nfc/nfc.h>   
 #include "rp_settings.h"
@@ -19,6 +20,23 @@
 nfc_device *pnd;
 nfc_target nt;
 nfc_context *context;
+
+void signal_handler(int signal) {
+
+    switch (signal) {
+        case SIGHUP:
+        case SIGUSR1:
+        case SIGINT:
+        case SIGTERM:
+        case SIGQUIT:
+            printf("\nFinalizing....\n");
+            doorlock(0);
+            exit(EXIT_SUCCESS);
+        default:
+            fprintf(stderr, "\nCaught wrong signal: %d\n", signal);
+            exit(EXIT_FAILURE);
+    }
+}
 
 char *charToHex(char *str) {
     int size = strlen(str);
@@ -131,7 +149,7 @@ void nfcProtocol() {
     sprintf(message, "BLOCK:%ld", blocks);
     printf("Sending number of blocks: %s\n", message);
     free(chunk.memory);
-    
+
     memcpy(capdu, message, strlen(message));
     capdulen = strlen(message);
     rapdulen = sizeof (rapdu);
@@ -166,8 +184,8 @@ void nfcProtocol() {
         free(buffer[totalSent]);
         totalSent++;
     } while (totalSent < blocks);
-    
-    
+
+
     printf("Sending READY!\n");
     memcpy(capdu, DOOR_READY, sizeof (DOOR_READY));
     capdulen = strlen(DOOR_READY);
@@ -273,10 +291,26 @@ void nfcProtocol() {
  */
 int main(int argc, char** argv) {
 
+    // Handling Linux Signals
+    if (signal(SIGHUP, signal_handler) == SIG_ERR) {
+        perror("\nCan't catch SIGHUP\n");
+    }
+    if (signal(SIGQUIT, signal_handler) == SIG_ERR) {
+        perror("\nCan't catch SIGQUIT\n");
+    }
+    if (signal(SIGUSR1, signal_handler) == SIG_ERR) {
+        perror("\nCan't catch SIGUSR1\n");
+    }
+    // supervisord will send this one
+    if (signal(SIGTERM, signal_handler) == SIG_ERR) {
+        perror("\nCan't catch SIGTERM\n");
+    }
+    if (signal(SIGINT, signal_handler) == SIG_ERR) {
+        perror("\nCan't catch SIGINT\n");
+    }
+
     // About GPIO & wiringPI Lib
     setupWiring();
-
-
 
     while (1) {
         nfc_init(&context);
