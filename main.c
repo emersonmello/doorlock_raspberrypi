@@ -240,7 +240,7 @@ void nfcProtocol() {
             return;
         }
 
-        if (strstr(result->payload, "KEY_NOT_REGISTERED") != NULL) {
+        if (strstr(result->payload, "SUCCESS") == NULL) {
             printf("Access denied!\n");
             memcpy(capdu, DOOR_DENY, sizeof (DOOR_DENY));
             capdulen = strlen(DOOR_DENY);

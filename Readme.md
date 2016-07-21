@@ -23,13 +23,14 @@ Figure below shows all necessary components and the relation between them
 
 ### Hardware
 
-- [Raspberry PI 2 B](https://www.raspberrypi.org/products/raspberry-pi-2-model-b/)
-- [Adafruit PN532](https://www.adafruit.com/products/364)
-- A simple Breadboard to connect raspberry and PN532
-- MOSFET transistor - https://www.adafruit.com/products/355
-- Lock-style solenoid - https://www.adafruit.com/product/1512
-- 02 resistors - 300 Ohms
+- 01 [Raspberry PI 2 B](https://www.raspberrypi.org/products/raspberry-pi-2-model-b/)
+- 01 [Adafruit PN532](https://www.adafruit.com/products/364)
+- 01 Breadboard to connect raspberry and PN532
+- 01 N channel MOSFET - https://www.adafruit.com/products/355
+- 01 Lock-style solenoid - https://www.adafruit.com/product/1512
+- 02 Resistors - 300 Ohms
 - 02 LED (red and green)
+- 02 Diode 1N4001 - https://www.adafruit.com/product/755
 
 
 ### Software
@@ -80,7 +81,7 @@ Figure below shows all necessary components and the relation between them
 ### Wiring Raspberry PI 2 B & PNB532
 
 1. To use UART on PNB532 breakout you must set to **OFF** the **SEL0** and **SEL1** jumpers
-1. Follow instructions (and picture) below
+1. Follow instructions (and picture) below to connect all components
 
 
 |Raspberry PI 2 B    | Wire color | PNB532 |
@@ -91,7 +92,15 @@ Figure below shows all necessary components and the relation between them
 | Pin 10 (BCM 15 RXD)| GREEN      | RXD    |
 
 
-![alt text](hw-wiring.png "Wiring raspberry PI 2 B & PNB532")
+![alt text](hw-wiring.png "Wiring raspberry PI 2 B & PNB532 & solenoid")
+
+|Raspberry PI 2 B    | Wire color | Component                |
+|--------------------|:----------:|:------------------------:|
+| Pin 11 (BCM 17)    | BLUE       | Green LED cathode (-)    |
+| Pin 13 (BCM 27)    | BLUE       | RED LED cathode (-)      |
+| Pin 15 (BCM 22)    | PURPLE     | Diode #1 anode (+)       |
+| Pin 39 (Ground)    | BLACK      | Breadboard negative rail |
+ 
 
 ### Testing
 
