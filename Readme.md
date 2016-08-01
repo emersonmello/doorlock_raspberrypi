@@ -110,19 +110,7 @@ You can test your setup reading an ISO14443-A card using `nfc-poll` program that
 
 
 
-## Running FIDO UAF Server, Card Reader and Opening Door Android Application
-
-### Getting necessary codes
-
-1. [FIDO UAF Demo Server](https://github.com/emersonmello/UAF)
-  - If you prefer, there is a [Docker container](https://www.docker.com/what-docker) ready to use here: https://github.com/emersonmello/docker-fidouafserver
-1. [Door lock NFC card reader](https://github.com/emersonmello/doorlock_raspberrypi)  <- You are working on it right now!
-1. [Dummy FIDO UAF Client](https://github.com/emersonmello/dummyuafclient)
-1. [Opening Door Android App](https://github.com/emersonmello/openingdoor)
-
-### Setting up
-
-#### Door lock NFC card reader on Raspberry PI
+## Running door lock NFC card reader on Raspberry PI
 
 1. Get the source code
 	- `cd ~ && git clone https://github.com/emersonmello/doorlock_raspberrypi.git`
@@ -134,6 +122,8 @@ You can test your setup reading an ISO14443-A card using `nfc-poll` program that
 1. Run it (sorry, you must be root because it is a requirement of wiringPi lib)
     - For instance: `sudo ./dist/Debug/GNU-Linux/doorlock_raspberrypi`
 
+### Setting up FIDO UAF Demo Server and Android Apps
+
 #### FIDO UAF Demo Server
 
 1. Start **FIDO UAF Demo Server**
@@ -141,15 +131,14 @@ You can test your setup reading an ISO14443-A card using `nfc-poll` program that
 		- [FIDO UAF Demo Server](https://github.com/emersonmello/UAF)
 		- Or, if you prefer, there is a [Docker container](https://www.docker.com/what-docker) ready to use [here](https://github.com/emersonmello/docker-fidouafserver)
 
-
 #### On Android Phone
 
-1. Install **Dummy FIDO UAF Client** and **Opening Door Android App** on your Android phone
+1. Install [Dummy FIDO UAF Client](https://github.com/emersonmello/dummyuafclient) and [Opening Door Android App](https://github.com/emersonmello/openingdoor) on your Android phone
 1. On **Opening Door Android App** touch on "Settings" on the main application menu and update "server endpoint" field to the **IP Address** and **PORT** where you are running the **FIDO UAF Demo Server**  
 1. On **Opening Door Android App** touch on "See app facetID" on the main application menu and insert the showed value in FIDO UAF Demo Server MySQL database:
   - For instance: ```INSERT  INTO facets (fDesc) values ('android:apk-key-hash:Lir5oIjf552K/XN4bTul0VS3GfM')```
 
-### Testing
+### Testing the whole thing
 
 1. Open **Opening Door Android App** and touch "Register" button
 1. Tap your mobile phone on "NFC reader"
