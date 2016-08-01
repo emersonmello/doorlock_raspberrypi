@@ -178,15 +178,15 @@ I'm using [supervisord](http://supervisord.org/) to handle this task because it 
     command=/usr/local/bin/doorlock_raspberrypi
     ```
 	- For instance:
-		```
-    printf "[program:doorlock]\ncommand=/usr/local/bin/doorlock_raspberrypi\n" | sudo tee -a  /etc/supervisord.conf
+    ```
+    printf "[program:doorlock]\n command=/usr/local/bin/doorlock_raspberrypi \n" | sudo tee -a  /etc/supervisord.conf
     ```
 1. Download [supervisord.sh](supervisord.sh) file and save it at `/etc/init.d`
-```
-sudo cp ~/doorlock_raspberrypi/supervisord.sh /etc/init.d
-chmod 755 /etc/init.d/supervisord.sh
-sudo update-rc.d supervisord.sh defaults
-```
+	```
+	sudo cp ~/doorlock_raspberrypi/supervisord.sh /etc/init.d
+	chmod 755 /etc/init.d/supervisord.sh
+	sudo update-rc.d supervisord.sh defaults
+	```
 
 ## References
 
