@@ -185,7 +185,7 @@ I'm using [supervisord](http://supervisord.org/) to handle this task because it 
 
 	```
 	sudo cp ~/doorlock_raspberrypi/supervisord.sh /etc/init.d
-	chmod 755 /etc/init.d/supervisord.sh
+	sudo chmod 755 /etc/init.d/supervisord.sh
 	sudo update-rc.d supervisord.sh defaults
 	```
 
