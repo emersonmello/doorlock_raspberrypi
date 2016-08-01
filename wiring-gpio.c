@@ -1,5 +1,11 @@
 #include "wiring-gpio.h"
 
+void cleaning(){
+  digitalWrite (0, LOW);
+  digitalWrite (2, LOW);
+  digitalWrite (3, LOW);
+}
+
 void doorlock(int open){
   
   if (open){

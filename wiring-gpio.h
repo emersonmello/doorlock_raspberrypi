@@ -14,6 +14,7 @@ extern "C" {
 
 #include <wiringPi.h>
 
+void cleaning();
 void doorlock(int open);
 void setupWiring();
     

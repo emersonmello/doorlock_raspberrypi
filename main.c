@@ -30,7 +30,7 @@ void signal_handler(int signal) {
         case SIGTERM:
         case SIGQUIT:
             printf("\nFinalizing....\n");
-            doorlock(0);
+            cleaning();
             exit(EXIT_SUCCESS);
         default:
             fprintf(stderr, "\nCaught wrong signal: %d\n", signal);
