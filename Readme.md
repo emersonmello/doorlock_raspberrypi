@@ -74,8 +74,8 @@ Figure below shows all necessary components and the relation between them
 
 |Raspberry PI 2 B    | Wire color | Component                |
 |--------------------|:----------:|:------------------------:|
-| Pin 11 (BCM 17)    | BLUE       | Green LED cathode (-)    |
-| Pin 13 (BCM 27)    | BLUE       | RED LED cathode (-)      |
+| Pin 11 (BCM 17)    | BLUE       | Green LED anode (+)    |
+| Pin 13 (BCM 27)    | BLUE       | RED LED anode (+)      |
 | Pin 15 (BCM 22)    | PURPLE     | Diode #1 anode (+)       |
 | Pin 39 (Ground)    | BLACK      | Breadboard negative rail |
 
