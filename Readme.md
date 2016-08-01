@@ -1,29 +1,3 @@
-<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
-
-- [Door lock NFC card reader for Raspberry PI](#door-lock-nfc-card-reader-for-raspberry-pi)
-	- [Motivation](#motivation)
-	- [Hardware requirements](#hardware-requirements)
-		- [Wiring Raspberry PI 2 B & PNB532](#wiring-raspberry-pi-2-b-pnb532)
-	- [Software requirements](#software-requirements)
-		- [Installing required packages](#installing-required-packages)
-		- [Freeing UART on the Raspberry PI running Raspbian GNU/Linux 8](#freeing-uart-on-the-raspberry-pi-running-raspbian-gnulinux-8)
-		- [Installing libnfc from source](#installing-libnfc-from-source)
-			- [Preparing the environment](#preparing-the-environment)
-			- [Run config & build](#run-config-build)
-			- [Testing](#testing)
-		- [Installing wiringPi from source](#installing-wiringpi-from-source)
-	- [Running FIDO UAF Server, Card Reader and Opening Door Android Application](#running-fido-uaf-server-card-reader-and-opening-door-android-application)
-		- [Getting necessary codes](#getting-necessary-codes)
-		- [Setting up](#setting-up)
-			- [FIDO UAF Demo Server](#fido-uaf-demo-server)
-			- [Door lock NFC card reader on Raspberry PI](#door-lock-nfc-card-reader-on-raspberry-pi)
-			- [On Android Phone](#on-android-phone)
-		- [Testing](#testing)
-	- [UML Sequence Diagram](#uml-sequence-diagram)
-	- [Starting door lock automatically on Raspberry boot](#starting-door-lock-automatically-on-raspberry-boot)
-	- [References](#references)
-
-<!-- /TOC -->
 
 # Door lock NFC card reader for Raspberry PI
 
@@ -148,6 +122,18 @@ You can test your setup reading an ISO14443-A card using `nfc-poll` program that
 
 ### Setting up
 
+#### Door lock NFC card reader on Raspberry PI
+
+1. Get the source code
+	- `cd ~ && git clone https://github.com/emersonmello/doorlock_raspberrypi.git`
+	- `cd doorlock_raspberrypi`
+1. Change **HOSTNAME** and **PORT** values on [Door lock NFC card reader's rp_settings.h file](https://github.com/emersonmello/doorlock_raspberrypi/blob/master/rp_settings.h) to the **IP Address** and **PORT** where you are running the **FIDO UAF Demo Server**
+  - For instance: `nano rp_settings.h`
+1. Compile **Door lock NFC card reader** project
+  - `make clean && make`
+1. Run it (sorry, you must be root because it is a requirement of wiringPi lib)
+    - For instance: `sudo ./dist/Debug/GNU-Linux/doorlock_raspberrypi`
+
 #### FIDO UAF Demo Server
 
 1. Start **FIDO UAF Demo Server**
@@ -155,16 +141,6 @@ You can test your setup reading an ISO14443-A card using `nfc-poll` program that
 		- [FIDO UAF Demo Server](https://github.com/emersonmello/UAF)
 		- Or, if you prefer, there is a [Docker container](https://www.docker.com/what-docker) ready to use [here](https://github.com/emersonmello/docker-fidouafserver)
 
-#### Door lock NFC card reader on Raspberry PI
-
-1. `cd ~ && git clone https://github.com/emersonmello/doorlock_raspberrypi.git`
-2. `cd doorlock_raspberrypi`
-1. Change **HOSTNAME** and **PORT** values on [Door lock NFC card reader's rp_settings.h file](https://github.com/emersonmello/doorlock_raspberrypi/blob/master/rp_settings.h) to the **IP Address** and **PORT** where you are running the **FIDO UAF Demo Server**
-  2. For instance: `nano rp_settings.h`
-1. Compile **Door lock NFC card reader** project
-  2. `make clean && make`
-1. Run it (sorry, you must be root because it is a requirement of wiringPi lib)
-    - For instance: `sudo ./dist/Debug/GNU-Linux/doorlock_raspberrypi`
 
 #### On Android Phone
 
