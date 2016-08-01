@@ -34,7 +34,7 @@ void blockSplit(const char* input, char **result, size_t block);
 static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp);
 size_t curl_callback (void *contents, size_t size, size_t nmemb, void *userp);
 CURLcode curl_fetch_url(CURL *ch, const char *url, struct curl_fetch_st *fetch);
-struct curl_fetch_st* postHttpRequest(char *url, char *payload);
+json_object *postHttpRequest(char *url, char *payload);
 memoryStruct getHttpRequest(char *);
     
 

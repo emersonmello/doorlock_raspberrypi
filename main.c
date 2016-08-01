@@ -242,12 +242,14 @@ void nfcProtocol() {
             val--;
         } while (val > 0);
         // FIDO Auth Request Message
-        printf("Forwarding card response to FIDO UAF Server\n");
+        printf("Forwarding card response to FIDO UAF Server: \n");
         sprintf(UAFMessage, AUTH_REQUEST_MSG, SCHEME, HOSTNAME, PORT, AUTH_RESPONSE_ENDPOINT);
-        curlFetchStruct *result = postHttpRequest(UAFMessage, UAFmsg);
+        //curlFetchStruct *result = postHttpRequest(UAFMessage, UAFmsg);
+        json_object *result = postHttpRequest(UAFMessage, UAFmsg);
         free(UAFmsg);
 
-        if (result->size <= 0) {
+        //        if (result->size <= 0) {
+        if (result == NULL) {
             printf("Error to connect to FIDO Server\n");
             memcpy(capdu, "ERROR", 5);
             capdulen = 5;
@@ -257,8 +259,11 @@ void nfcProtocol() {
             }
             return;
         }
+        printf("Resul payload: %s \n", json_object_to_json_string(result));
+        const char *resultStr = json_object_to_json_string(result);
 
-        if (strstr(result->payload, "SUCCESS") == NULL) {
+        
+        if (strstr(resultStr, "SUCCESS") == NULL) {
             printf("Access denied!\n");
             memcpy(capdu, DOOR_DENY, sizeof (DOOR_DENY));
             capdulen = strlen(DOOR_DENY);
@@ -277,6 +282,9 @@ void nfcProtocol() {
             doorlock(1);
             doorlock(0);
         }
+        /* free json object */
+        json_object_put(result);
+        
         strncpy(message, rapdu, (int) rapdulen);
         if (strstr(message, "BYE") != NULL) {
             printf("bye!\n");

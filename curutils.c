@@ -129,7 +129,8 @@ void remove_all_chars(char* str, char c) {
     *pw = '\0';
 }
 
-struct curl_fetch_st *postHttpRequest(char *url, char *payload) {
+//struct curl_fetch_st *postHttpRequest(char *url, char *payload) {
+json_object *postHttpRequest(char *url, char *payload) {    
     CURL *curl;
     CURLcode rcode;
 
@@ -149,14 +150,18 @@ struct curl_fetch_st *postHttpRequest(char *url, char *payload) {
     headers = curl_slist_append(headers, "Accept: application/json");
     headers = curl_slist_append(headers, "Content-Type: application/json");
 
-    //remove_all_chars(payload, '\\');
     json = json_tokener_parse(payload);
     
-    json_object *foo = json_object_object_get(json,"uafProtocolMessage");
+    json_object *foo;
+    if (!json_object_object_get_ex(json,"uafProtocolMessage",&foo)){
+        printf("Error to extract uafProtocolMessage from AuthResponse sent by card\n");
+    }
+        
     char const *decoded = json_object_get_string(foo);
+    // Debug purpose only
+    //printf("uafProtocolMessage: %s\n", decoded);
     enum json_type type;
      
-
     curl = curl_easy_init();
 
     if (curl) {
@@ -183,24 +188,25 @@ struct curl_fetch_st *postHttpRequest(char *url, char *payload) {
             fprintf(stderr, "ERROR: Failed to fetch url (%s) - curl said: %s",
                     url, curl_easy_strerror(rcode));
             /* return error */
-            //return NULL;
+            return NULL;
         }
 
         /* check payload */
         if (cf->payload != NULL) {
             /* debug -  print result */
-            // printf("CURL Returned: \n%s\n", cf->payload);
+            //printf("CURL Returned: \n%s\n", cf->payload);
             /* parse return */
             json = json_tokener_parse_verbose(cf->payload, &jerr);
             /* free payload */
             free(cf->payload);
+            return json;
         } else {
             /* error */
             fprintf(stderr, "ERROR: Failed to populate payload");
             /* free payload */
             free(cf->payload);
             /* return */
-            //return NULL;
+            return NULL;
         }
         /* check error */
         if (jerr != json_tokener_success) {
@@ -209,12 +215,12 @@ struct curl_fetch_st *postHttpRequest(char *url, char *payload) {
             /* free json object */
             json_object_put(json);
             /* return */
-            //return NULL;
+            return NULL;
         }
         /* debugging */
         //printf("Parsed JSON: %s\n", json_object_to_json_string(json));
     }
-    return cf;
+    return NULL;
 }
 
 memoryStruct getHttpRequest(char *url) {

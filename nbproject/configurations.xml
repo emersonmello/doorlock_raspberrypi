@@ -88,6 +88,14 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
+        <linkerTool>
+          <linkerLibItems>
+            <linkerOptionItem>`pkg-config --libs json`</linkerOptionItem>
+            <linkerOptionItem>`pkg-config --libs libcurl`</linkerOptionItem>
+            <linkerOptionItem>`pkg-config --libs libnfc`</linkerOptionItem>
+          </linkerLibItems>
+          <commandLine>-lwiringPi</commandLine>
+        </linkerTool>
       </compileType>
       <item path="Readme.md" ex="false" tool="3" flavor2="0">
       </item>

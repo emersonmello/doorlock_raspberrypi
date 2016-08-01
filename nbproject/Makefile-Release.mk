@@ -54,7 +54,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=
+LDLIBSOPTIONS=`pkg-config --libs json` `pkg-config --libs libcurl` `pkg-config --libs libnfc`  
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -62,22 +62,22 @@ LDLIBSOPTIONS=
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/doorlock_raspberrypi: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/doorlock_raspberrypi ${OBJECTFILES} ${LDLIBSOPTIONS}
+	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/doorlock_raspberrypi ${OBJECTFILES} ${LDLIBSOPTIONS} -lwiringPi
 
 ${OBJECTDIR}/curutils.o: curutils.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.c) -O2 -std=c99 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/curutils.o curutils.c
+	$(COMPILE.c) -O2 `pkg-config --cflags json` `pkg-config --cflags libcurl` `pkg-config --cflags libnfc` -std=c99  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/curutils.o curutils.c
 
 ${OBJECTDIR}/main.o: main.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.c) -O2 -std=c99 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.c
+	$(COMPILE.c) -O2 `pkg-config --cflags json` `pkg-config --cflags libcurl` `pkg-config --cflags libnfc` -std=c99  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.c
 
 ${OBJECTDIR}/wiring-gpio.o: wiring-gpio.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.c) -O2 -std=c99 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/wiring-gpio.o wiring-gpio.c
+	$(COMPILE.c) -O2 `pkg-config --cflags json` `pkg-config --cflags libcurl` `pkg-config --cflags libnfc` -std=c99  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/wiring-gpio.o wiring-gpio.c
 
 # Subprojects
 .build-subprojects:
