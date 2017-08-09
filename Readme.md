@@ -15,9 +15,9 @@ Figure below shows all necessary components and the relation between them
 
 1. [FIDO UAF Demo Server](https://github.com/emersonmello/UAF)
   - If you prefer, there is a [Docker container](https://www.docker.com/what-docker) ready to use here: https://github.com/emersonmello/docker-fidouafserver
-1. [Door lock NFC card reader](https://github.com/emersonmello/doorlock_raspberrypi) <- You are working on it right now!
-1. [Dummy FIDO UAF Client](https://github.com/emersonmello/dummyuafclient)
-1. [Opening Door Android App](https://github.com/emersonmello/openingdoor)
+2. [Door lock NFC card reader](https://github.com/emersonmello/doorlock_raspberrypi) <- You are working on it right now!
+3. [Dummy FIDO UAF Client](https://github.com/emersonmello/dummyuafclient)
+4. [Opening Door Android App](https://github.com/emersonmello/openingdoor)
 
 ## Hardware requirements
 
@@ -33,25 +33,25 @@ Figure below shows all necessary components and the relation between them
 ### Wiring Raspberry PI 2 B & PNB532
 
 1. To use UART on PNB532 breakout you must set to **OFF** the **SEL0** and **SEL1** jumpers
-1. Follow instructions (and picture) below to connect all components
+2. Follow instructions (and picture) below to connect all components
 
 
-|Raspberry PI 2 B    | Wire color | PNB532 |
-|--------------------|:----------:|:------:|
-| Pin 2 (5v)         | RED        | 5.0V   |
-| Pin 6 (ground)     | BLACK      | GND    |
-| Pin 8 (BCM 14 TXD) | YELLOW     | TXD    |
-| Pin 10 (BCM 15 RXD)| GREEN      | RXD    |
+| Raspberry PI 2 B    | Wire color | PNB532 |
+| ------------------- | :--------: | :----: |
+| Pin 2 (5v)          |    RED     |  5.0V  |
+| Pin 6 (ground)      |   BLACK    |  GND   |
+| Pin 8 (BCM 14 TXD)  |   YELLOW   |  TXD   |
+| Pin 10 (BCM 15 RXD) |   GREEN    |  RXD   |
 
 
 ![alt text](hw-wiring.png "Wiring raspberry PI 2 B & PNB532 & solenoid")
 
-|Raspberry PI 2 B    | Wire color | Component                |
-|--------------------|:----------:|:------------------------:|
-| Pin 11 (BCM 17)    | BLUE       | Green LED anode (+)    |
-| Pin 13 (BCM 27)    | BLUE       | RED LED anode (+)      |
-| Pin 15 (BCM 22)    | PURPLE     | Diode #1 anode (+)       |
-| Pin 39 (Ground)    | BLACK      | Breadboard negative rail |
+| Raspberry PI 2 B | Wire color |        Component         |
+| ---------------- | :--------: | :----------------------: |
+| Pin 11 (BCM 17)  |    BLUE    |   Green LED anode (+)    |
+| Pin 13 (BCM 27)  |    BLUE    |    RED LED anode (+)     |
+| Pin 15 (BCM 22)  |   PURPLE   |    Diode #1 anode (+)    |
+| Pin 39 (Ground)  |   BLACK    | Breadboard negative rail |
 
 
 
@@ -74,7 +74,7 @@ Figure below shows all necessary components and the relation between them
 	sudo raspi-config
 
 - Go to option 9 	"Advanced Options"
-	- (Ps: for Raspbian GNU/Linux 7 go to option 8)
+- (Ps: for Raspbian GNU/Linux 7 go to option 8)
 - Go to option A8 "Serial" and select **NO**
 - Finish and reboot: `sudo shutdown -r now`
 
@@ -85,9 +85,9 @@ Figure below shows all necessary components and the relation between them
 	cd ~ && sudo mkdir -p /etc/nfc/devices.d
 	git clone https://github.com/nfc-tools/libnfc.git
 	cd libnfc
-
+	
 	sudo cp contrib/libnfc/pn532_uart_on_rpi.conf.sample /etc/nfc/devices.d/pn532_uart_on_rpi.conf
-
+	
 	echo "allow_instrusive_scan =  true" | sudo tee -a  /etc/nfc/devices.d/pn532_uart_on_rpi.conf
 
 #### Run config & build
@@ -113,13 +113,13 @@ You can test your setup reading an ISO14443-A card using `nfc-poll` program that
 ## Running door lock NFC card reader on Raspberry PI
 
 1. Get the source code
-	- `cd ~ && git clone https://github.com/emersonmello/doorlock_raspberrypi.git`
-	- `cd doorlock_raspberrypi`
-1. Change **HOSTNAME** and **PORT** values on [Door lock NFC card reader's rp_settings.h file](https://github.com/emersonmello/doorlock_raspberrypi/blob/master/rp_settings.h) to the **IP Address** and **PORT** where you are running the **FIDO UAF Demo Server**
+- `cd ~ && git clone https://github.com/emersonmello/doorlock_raspberrypi.git`
+- `cd doorlock_raspberrypi`
+2. Change **HOSTNAME** and **PORT** values on [Door lock NFC card reader's rp_settings.h file](https://github.com/emersonmello/doorlock_raspberrypi/blob/master/rp_settings.h) to the **IP Address** and **PORT** where you are running the **FIDO UAF Demo Server**
   - For instance: `nano rp_settings.h`
-1. Compile **Door lock NFC card reader** project
+3. Compile **Door lock NFC card reader** project
   - `make clean && make`
-1. Run it (sorry, you must be root because it is a requirement of wiringPi lib)
+4. Run it (sorry, you must be root because it is a requirement of wiringPi lib)
     - For instance: `sudo ./dist/Debug/GNU-Linux/doorlock_raspberrypi`
 
 ### Setting up FIDO UAF Demo Server and Android Apps
@@ -127,22 +127,23 @@ You can test your setup reading an ISO14443-A card using `nfc-poll` program that
 #### FIDO UAF Demo Server
 
 1. Start **FIDO UAF Demo Server**
-	- Follow the instructions provided by:
-		- [FIDO UAF Demo Server](https://github.com/emersonmello/UAF)
-		- Or, if you prefer, there is a [Docker container](https://www.docker.com/what-docker) ready to use [here](https://github.com/emersonmello/docker-fidouafserver)
+- Follow the instructions provided by:
+  - [FIDO UAF Demo Server](https://github.com/emersonmello/UAF)
+  - Or, if you prefer, there is a [Docker container](https://www.docker.com/what-docker) ready to use [here](https://github.com/emersonmello/docker-fidouafserver)
 
 #### On Android Phone
 
-1. Install [Dummy FIDO UAF Client](https://github.com/emersonmello/dummyuafclient) and [Opening Door Android App](https://github.com/emersonmello/openingdoor) on your Android phone
-1. On **Opening Door Android App** touch on "Settings" on the main application menu and update "server endpoint" field to the **IP Address** and **PORT** where you are running the **FIDO UAF Demo Server**  
-1. On **Opening Door Android App** touch on "See app facetID" on the main application menu and insert the showed value in FIDO UAF Demo Server MySQL database:
-  - For instance: ```INSERT  INTO facets (fDesc) values ('android:apk-key-hash:Lir5oIjf552K/XN4bTul0VS3GfM')```
+1. Install [Dummy FIDO UAF Client](https://github.com/emersonmello/dummyuafclient) on your Android phone
+2. Install [Opening Door Android App](https://github.com/emersonmello/openingdoor) on your Android phone
+3. On **Opening Door Android App** touch on "Settings" on the main application menu and update "server endpoint" field to the **IP Address** and **PORT** where you are running the **FIDO UAF Demo Server**  
+4. On **Opening Door Android App** touch on "Whitelisting facetID" (to follow [FIDO UAF specifications](https://fidoalliance.org/specs/fido-uaf-v1.1-id-20170202/fido-appid-and-facets-v1.1-id-20170202.html) ).
+   1. Or you can do it: On **Opening Door Android App** touch on "See app facetID" on the main application menu and insert the showed value in [FIDO UAF Demo Server](https://github.com/emersonmello/UAF) MySQL database. For instance: ```INSERT INTO facets (fDesc) values ('android:apk-key-hash:Lir5oIjf552K/XN4bTul0VS3GfM')```
 
 ### Testing the whole thing
 
 1. Open **Opening Door Android App** and touch "Register" button
-1. Tap your mobile phone on "NFC reader"
-1. Follow the instructions provided by application (i.e. put your finger on the sensor, etc.) and you should see the message "Access Granted"
+2. Tap your mobile phone on "NFC reader"
+3. Follow the instructions provided by application (i.e. put your finger on the sensor, etc.) and you should see the message "Access Granted"
 
 ## UML Sequence Diagram
 
@@ -155,28 +156,28 @@ I'm using [supervisord](http://supervisord.org/) to handle this task because it 
 
 1. Copy `doorlock_raspberrypi` binary to /usr/local/bin
   - `sudo cp ~/doorlock_raspberrypi/dist/Debug/GNU-Linux/doorlock_raspberrypi /usr/local/bin`
-1. Installing python2.7
+2. Installing python2.7
     - `sudo apt-get install python`
-1. Installing supervisord
+3. Installing supervisord
     - `sudo easy_install supervisor`
     - `echo_supervisord_conf | sudo tee /etc/supervisord.conf`
-1. Adding a program section to supervisord's configuration file
+4. Adding a program section to supervisord's configuration file
     - Add the follow lines at the end of **/etc/supervisord.conf** file
     ```
     [program:doorlock]
     command=/usr/local/bin/doorlock_raspberrypi
     ```
-	- For instance:
+    - For instance:
     ```
     printf "[program:doorlock]\n command=/usr/local/bin/doorlock_raspberrypi \n" | sudo tee -a  /etc/supervisord.conf
     ```
-1. Download [supervisord.sh](supervisord.sh) file and save it at `/etc/init.d`
+5. Download [supervisord.sh](supervisord.sh) file and save it at `/etc/init.d`
 
-	```
-	sudo cp ~/doorlock_raspberrypi/supervisord.sh /etc/init.d
-	sudo chmod 755 /etc/init.d/supervisord.sh
-	sudo update-rc.d supervisord.sh defaults
-	```
+ ```
+ sudo cp ~/doorlock_raspberrypi/supervisord.sh /etc/init.d
+ sudo chmod 755 /etc/init.d/supervisord.sh
+ sudo update-rc.d supervisord.sh defaults
+ ```
 
 ## References
 
