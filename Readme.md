@@ -66,8 +66,7 @@ Figure below shows all necessary components and the relation between them
 ### Installing required packages
 
 	sudo apt-get install git build-essential autoconf libtool libpcsclite-dev
-	sudo apt-get install libusb-dev libcurl4-openssl-dev libjson0-dev
-
+	sudo apt-get install libusb-dev libcurl4-openssl-dev libjson-c-dev
 
 ### Freeing UART on the Raspberry PI running Raspbian GNU/Linux 8
 
