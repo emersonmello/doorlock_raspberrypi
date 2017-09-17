@@ -21,8 +21,8 @@ FC=gfortran
 AS=as
 
 # Macros
-CND_PLATFORM=GNU-Linux
-CND_DLIB_EXT=so
+CND_PLATFORM=GNU-MacOSX
+CND_DLIB_EXT=dylib
 CND_CONF=Debug
 CND_DISTDIR=dist
 CND_BUILDDIR=build
@@ -54,7 +54,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=`pkg-config --libs libcurl` `pkg-config --libs libnfc` `pkg-config --libs json`  
+LDLIBSOPTIONS=`pkg-config --libs libcurl` `pkg-config --libs libnfc` `pkg-config --libs json-c`  
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -64,20 +64,20 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/doorlock_raspberrypi: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/doorlock_raspberrypi ${OBJECTFILES} ${LDLIBSOPTIONS} -lwiringPi
 
-${OBJECTDIR}/curutils.o: curutils.c 
+${OBJECTDIR}/curutils.o: curutils.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.c) -g `pkg-config --cflags libcurl` `pkg-config --cflags libnfc` `pkg-config --cflags json` -std=c99  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/curutils.o curutils.c
+	$(COMPILE.c) -g `pkg-config --cflags libcurl` `pkg-config --cflags libnfc` `pkg-config --cflags json-c` -std=c99  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/curutils.o curutils.c
 
-${OBJECTDIR}/main.o: main.c 
+${OBJECTDIR}/main.o: main.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.c) -g `pkg-config --cflags libcurl` `pkg-config --cflags libnfc` `pkg-config --cflags json` -std=c99  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.c
+	$(COMPILE.c) -g `pkg-config --cflags libcurl` `pkg-config --cflags libnfc` `pkg-config --cflags json-c` -std=c99  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.c
 
-${OBJECTDIR}/wiring-gpio.o: wiring-gpio.c 
+${OBJECTDIR}/wiring-gpio.o: wiring-gpio.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.c) -g `pkg-config --cflags libcurl` `pkg-config --cflags libnfc` `pkg-config --cflags json` -std=c99  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/wiring-gpio.o wiring-gpio.c
+	$(COMPILE.c) -g `pkg-config --cflags libcurl` `pkg-config --cflags libnfc` `pkg-config --cflags json-c` -std=c99  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/wiring-gpio.o wiring-gpio.c
 
 # Subprojects
 .build-subprojects:
@@ -85,7 +85,6 @@ ${OBJECTDIR}/wiring-gpio.o: wiring-gpio.c
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/doorlock_raspberrypi
 
 # Subprojects
 .clean-subprojects:

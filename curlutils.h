@@ -14,7 +14,7 @@ extern "C" {
     
 #include <stdlib.h>
 #include <string.h>
-#include <json/json.h>
+#include <json-c/json.h>
 #include <curl/curl.h>
     
 struct MemoryStruct {

@@ -48,7 +48,7 @@ Figure below shows all necessary components and the relation between them
 
 | Raspberry PI 2 B | Wire color |        Component         |
 | ---------------- | :--------: | :----------------------: |
-| Pin 11 (BCM 17)  |    BLUE    |   Green LED anode (+)    |
+| Pin 11 (BCM 17)  |    ORANGE  |   Green LED anode (+)    |
 | Pin 13 (BCM 27)  |    BLUE    |    RED LED anode (+)     |
 | Pin 15 (BCM 22)  |   PURPLE   |    Diode #1 anode (+)    |
 | Pin 39 (Ground)  |   BLACK    | Breadboard negative rail |
@@ -68,14 +68,21 @@ Figure below shows all necessary components and the relation between them
 	sudo apt-get install git build-essential autoconf libtool libpcsclite-dev
 	sudo apt-get install libusb-dev libcurl4-openssl-dev libjson-c-dev
 
-### Freeing UART on the Raspberry PI running Raspbian GNU/Linux 8
+### Freeing UART 
+	
+  sudo raspi-config
 
-	sudo raspi-config
+#### On the Raspberry PI 2 B running Raspbian GNU/Linux 8
 
-- Go to option 9 	"Advanced Options"
-- (Ps: for Raspbian GNU/Linux 7 go to option 8)
-- Go to option A8 "Serial" and select **NO**
+- Select option 9 	"Advanced Options"
+- Select option A8 "Serial" and select **NO**
 - Finish and reboot: `sudo shutdown -r now`
+
+#### On the Raspberry PI 3 B running Raspbian Stretch
+
+- Select option 5 "Interface options"
+- Select option P6 "Serial", and select **NO**
+- Exit and reboot
 
 ### Installing libnfc from source
 
