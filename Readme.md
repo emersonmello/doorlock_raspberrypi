@@ -48,7 +48,7 @@ Figure below shows all necessary components and the relation between them
 
 | Raspberry PI 2 B | Wire color |        Component         |
 | ---------------- | :--------: | :----------------------: |
-| Pin 11 (BCM 17)  |    ORANGE  |   Green LED anode (+)    |
+| Pin 11 (BCM 17)  |   ORANGE   |   Green LED anode (+)    |
 | Pin 13 (BCM 27)  |    BLUE    |    RED LED anode (+)     |
 | Pin 15 (BCM 22)  |   PURPLE   |    Diode #1 anode (+)    |
 | Pin 39 (Ground)  |   BLACK    | Breadboard negative rail |
@@ -68,8 +68,8 @@ Figure below shows all necessary components and the relation between them
 	sudo apt-get install git build-essential autoconf libtool libpcsclite-dev
 	sudo apt-get install libusb-dev libcurl4-openssl-dev libjson-c-dev
 
-### Freeing UART 
-	
+### Freeing [UART](https://www.raspberrypi.org/documentation/configuration/uart.md)
+
   sudo raspi-config
 
 #### On the Raspberry PI 2 B running Raspbian GNU/Linux 8
@@ -86,15 +86,33 @@ Figure below shows all necessary components and the relation between them
 
 ### Installing libnfc from source
 
-#### Preparing the environment
+```cd ~ && sudo mkdir -p /etc/nfc/devices.d
+git clone https://github.com/nfc-tools/libnfc.git
+cd libnfc
+```
 
-	cd ~ && sudo mkdir -p /etc/nfc/devices.d
-	git clone https://github.com/nfc-tools/libnfc.git
-	cd libnfc
-	
-	sudo cp contrib/libnfc/pn532_uart_on_rpi.conf.sample /etc/nfc/devices.d/pn532_uart_on_rpi.conf
-	
-	echo "allow_instrusive_scan =  true" | sudo tee -a  /etc/nfc/devices.d/pn532_uart_on_rpi.conf
+#### On the Raspberry PI 2 B
+
+`sudo cp contrib/libnfc/pn532_uart_on_rpi.conf.sample /etc/nfc/devices.d/pn532_uart_on_rpi.conf`
+
+`echo "allow_instrusive_scan =  true" | sudo tee -a  /etc/nfc/devices.d/pn532_uart_on_rpi.conf`
+
+#### On the Raspberry PI 3 B
+
+`sudo cp contrib/libnfc/pn532_uart_on_rpi_3.conf.sample /etc/nfc/devices.d/pn532_uart_on_rpi_3.conf`
+
+and you have to:
+
+- enable uart on GPIO, add this line to bottom of `/boot/config.txt`
+  `enable_uart=1`
+- Stop and disable serial console:
+```
+sudo systemctl stop serial-getty@ttyS0.service
+sudo systemctl disable serial-getty@ttyS0.service
+```
+- Remove console from `/boot/cmdline.txt` by removing: 
+    `console=serial0,115200` Save and reboot for changes to take effect.
+
 
 #### Run config & build
 
@@ -169,14 +187,14 @@ I'm using [supervisord](http://supervisord.org/) to handle this task because it 
     - `echo_supervisord_conf | sudo tee /etc/supervisord.conf`
 4. Adding a program section to supervisord's configuration file
     - Add the follow lines at the end of **/etc/supervisord.conf** file
-    ```
+ ```
     [program:doorlock]
     command=/usr/local/bin/doorlock_raspberrypi
-    ```
+    ​```
     - For instance:
-    ```
+    ​```
     printf "[program:doorlock]\n command=/usr/local/bin/doorlock_raspberrypi \n" | sudo tee -a  /etc/supervisord.conf
-    ```
+    ​```
 5. Download [supervisord.sh](supervisord.sh) file and save it at `/etc/init.d`
 
  ```
@@ -195,3 +213,5 @@ I'm using [supervisord](http://supervisord.org/) to handle this task because it 
 - http://pinout.xyz/
 
 ![alt text](pinout.png "Raspberry PI 2 B pinout")
+
+ ```
