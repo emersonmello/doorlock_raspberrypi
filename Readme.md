@@ -1,4 +1,3 @@
-
 # Door lock NFC card reader for Raspberry PI
 
 ## Motivation
@@ -104,6 +103,7 @@ cd libnfc
 and you have to:
 
 - enable uart on GPIO, add this line to bottom of `/boot/config.txt`
+
   `enable_uart=1`
 - Stop and disable serial console:
 ```
@@ -111,7 +111,10 @@ sudo systemctl stop serial-getty@ttyS0.service
 sudo systemctl disable serial-getty@ttyS0.service
 ```
 - Remove console from `/boot/cmdline.txt` by removing: 
-    `console=serial0,115200` Save and reboot for changes to take effect.
+
+    `console=serial0,115200`
+
+- Save and reboot for changes to take effect.
 
 
 #### Run config & build
@@ -173,7 +176,6 @@ You can test your setup reading an ISO14443-A card using `nfc-poll` program that
 
 ![alt text](sd_doorlock.png "Communication diagram")
 
-
 ## Starting door lock automatically on Raspberry boot
 
 I'm using [supervisord](http://supervisord.org/) to handle this task because it can also restart a failed process
@@ -188,19 +190,18 @@ I'm using [supervisord](http://supervisord.org/) to handle this task because it 
 4. Adding a program section to supervisord's configuration file
     - Add the follow lines at the end of **/etc/supervisord.conf** file
  ```
-    [program:doorlock]
-    command=/usr/local/bin/doorlock_raspberrypi
-    ​```
-    - For instance:
-    ​```
-    printf "[program:doorlock]\n command=/usr/local/bin/doorlock_raspberrypi \n" | sudo tee -a  /etc/supervisord.conf
-    ​```
-5. Download [supervisord.sh](supervisord.sh) file and save it at `/etc/init.d`
-
+[program:doorlock]
+command=/usr/local/bin/doorlock_raspberrypi
  ```
- sudo cp ~/doorlock_raspberrypi/supervisord.sh /etc/init.d
- sudo chmod 755 /etc/init.d/supervisord.sh
- sudo update-rc.d supervisord.sh defaults
+- For instance:
+```
+printf "[program:doorlock]\n command=/usr/local/bin/doorlock_raspberrypi \n" | sudo tee -a  /etc/supervisord.conf
+```
+5. Download [supervisord.sh](supervisord.sh) file and save it at `/etc/init.d`
+ ```
+sudo cp ~/doorlock_raspberrypi/supervisord.sh /etc/init.d
+sudo chmod 755 /etc/init.d/supervisord.sh
+sudo update-rc.d supervisord.sh defaults
  ```
 
 ## References
@@ -213,5 +214,7 @@ I'm using [supervisord](http://supervisord.org/) to handle this task because it 
 - http://pinout.xyz/
 
 ![alt text](pinout.png "Raspberry PI 2 B pinout")
+
+ ```
 
  ```
