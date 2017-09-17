@@ -126,7 +126,7 @@ You can test your setup reading an ISO14443-A card using `nfc-poll` program that
 3. Compile **Door lock NFC card reader** project
   - `make clean && make`
 4. Run it (sorry, you must be root because it is a requirement of wiringPi lib)
-    - For instance: `sudo ./dist/Debug/GNU-Linux/doorlock_raspberrypi`
+    - For instance: `sudo ./dist/Debug/GNU-MacOSX/doorlock_raspberrypi`
 
 ### Setting up FIDO UAF Demo Server and Android Apps
 
