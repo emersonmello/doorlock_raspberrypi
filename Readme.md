@@ -260,6 +260,8 @@ sudo update-rc.d supervisord.sh defaults
 - https://github.com/nfc-tools/libnfc/tree/master/examples
 - https://netbeans.org/kb/docs/cnd/remotedev-tutorial.html
 - http://pinout.xyz/
+- http://osoyoo.com/2017/07/20/pn532-nfc-rfid-module-for-raspberry-pi/
+- https://www.itead.cc/blog/raspberry-pi-drives-itead-pn532-nfc-module-with-libnfc
 
 ![alt text](pinout.png "Raspberry PI 2 B pinout")
 
