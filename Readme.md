@@ -21,6 +21,8 @@ Figure below shows all necessary components and the relation between them
 ## Hardware requirements
 
 - 01 [Raspberry PI 2 B](https://www.raspberrypi.org/products/raspberry-pi-2-model-b/)
+    - 01 or [Raspberry PI 3
+        B](https://www.raspberrypi.org/products/raspberry-pi-3-model-b/)
 - 01 [Adafruit PN532](https://www.adafruit.com/products/364)
 - 01 Breadboard to connect raspberry and PN532
 - 01 N channel MOSFET - https://www.adafruit.com/products/355
@@ -53,6 +55,29 @@ Figure below shows all necessary components and the relation between them
 | Pin 39 (Ground)  |   BLACK    | Breadboard negative rail |
 
 
+### Wiring Raspberry PI 3 B & PNB532
+
+1. To use I2C on PNB532 breakout you must toggle the switch to the I2C mode \
+![](https://preview.ibb.co/jdftL6/i2c_mode.png)
+2. Follow instructions (and picture) below to connect all components
+
+
+| Raspberry PI 3 B    | Wire color | PNB532 |
+| ------------------- | :--------: | :----: |
+| Pin 2 (5v)          |    RED     |  5.0V  |
+| Pin 6 (ground)      |   BLACK    |  GND   |
+| Pin 3 (BCM 14 TXD)  |   YELLOW   |  TXD   |
+| Pin 5 (BCM 15 RXD)  |   GREEN    |  RXD   |
+
+
+| Raspberry PI 2 B | Wire color |        Component         |
+| ---------------- | :--------: | :----------------------: |
+| Pin 11 (BCM 17)  |   ORANGE   |   Green LED anode (+)    |
+| Pin 13 (BCM 27)  |    BLUE    |    RED LED anode (+)     |
+| Pin 15 (BCM 22)  |   PURPLE   |    Diode #1 anode (+)    |
+| Pin 39 (Ground)  |   BLACK    | Breadboard negative rail |
+
+![](https://image.ibb.co/j6H7f6/20171122_114105.jpg)
 
 ## Software requirements
 
@@ -83,6 +108,12 @@ Figure below shows all necessary components and the relation between them
 - Select option P6 "Serial", and select **NO**
 - Exit and reboot
 
+#### I2C instead of UART (Raspberry PI 3 B running Rasbian lite)
+
+- Select option 5 "Interface options"
+- Select option A7 "I2C", and select **YES**
+- Exit and reboot
+
 ### Installing libnfc from source
 
 ```cd ~ && sudo mkdir -p /etc/nfc/devices.d
@@ -105,12 +136,25 @@ and you have to:
 - enable uart on GPIO, add this line to bottom of `/boot/config.txt`
 
   `enable_uart=1`
+
+- disable bluetooth on GPIO, adding the following line anywhere at
+    `/boot/config.txt`
+
+    `dtoverlay=pi3-disable-bt`
+
 - Stop and disable serial console:
 ```
 sudo systemctl stop serial-getty@ttyS0.service
 sudo systemctl disable serial-getty@ttyS0.service
 ```
-- Remove console from `/boot/cmdline.txt` by removing: 
+
+- Stop and disable `hciuart`
+```
+sudo systemctl disable hciuart
+sudo systemctl stop hciuart
+```
+
+- Remove console from `/boot/cmdline.txt` by removing:
 
     `console=serial0,115200`
 
@@ -131,11 +175,15 @@ You can test your setup reading an ISO14443-A card using `nfc-poll` program that
 	cd ~/libnfc/examples
 	./nfc-poll
 
+If you are using I2C, make sure your NFC was detected by using the following
+command `i2cdetect  -y 1`, you should get an output similar to the following
+image.
+
+![](https://image.ibb.co/esq2f6/nfc_addr.png)
+
 ### Installing wiringPi from source
 
 - Please, follow the instructions provided by [official website](http://wiringpi.com/download-and-install).
-
-
 
 ## Running door lock NFC card reader on Raspberry PI
 
@@ -162,7 +210,7 @@ You can test your setup reading an ISO14443-A card using `nfc-poll` program that
 
 1. Install [Dummy FIDO UAF Client](https://github.com/emersonmello/dummyuafclient) on your Android phone
 2. Install [Opening Door Android App](https://github.com/emersonmello/openingdoor) on your Android phone
-3. On **Opening Door Android App** touch on "Settings" on the main application menu and update "server endpoint" field to the **IP Address** and **PORT** where you are running the **FIDO UAF Demo Server**  
+3. On **Opening Door Android App** touch on "Settings" on the main application menu and update "server endpoint" field to the **IP Address** and **PORT** where you are running the **FIDO UAF Demo Server**
 4. On **Opening Door Android App** touch on "Whitelisting facetID" (to follow [FIDO UAF specifications](https://fidoalliance.org/specs/fido-uaf-v1.1-id-20170202/fido-appid-and-facets-v1.1-id-20170202.html) ).
    1. Or you can do it: On **Opening Door Android App** touch on "See app facetID" on the main application menu and insert the showed value in [FIDO UAF Demo Server](https://github.com/emersonmello/UAF) MySQL database. For instance: ```INSERT INTO facets (fDesc) values ('android:apk-key-hash:Lir5oIjf552K/XN4bTul0VS3GfM')```
 
