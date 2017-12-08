@@ -21,8 +21,7 @@ Figure below shows all necessary components and the relation between them
 ## Hardware requirements
 
 - 01 [Raspberry PI 2 B](https://www.raspberrypi.org/products/raspberry-pi-2-model-b/)
-    - 01 or [Raspberry PI 3
-        B](https://www.raspberrypi.org/products/raspberry-pi-3-model-b/)
+    - 01 or [Raspberry PI 3B](https://www.raspberrypi.org/products/raspberry-pi-3-model-b/)
 - 01 [Adafruit PN532](https://www.adafruit.com/products/364)
 - 01 Breadboard to connect raspberry and PN532
 - 01 N channel MOSFET - https://www.adafruit.com/products/355
@@ -30,6 +29,8 @@ Figure below shows all necessary components and the relation between them
 - 02 Resistors - 300 Ohms
 - 02 LED (red and green)
 - 02 Diode 1N4001 - https://www.adafruit.com/product/755
+
+## Raspberry Pi 2
 
 ### Wiring Raspberry PI 2 B & PNB532
 
@@ -55,10 +56,12 @@ Figure below shows all necessary components and the relation between them
 | Pin 39 (Ground)  |   BLACK    | Breadboard negative rail |
 
 
+## Raspberry Pi 3B
+
 ### Wiring Raspberry PI 3 B & PNB532
 
 1. To use I2C on PNB532 breakout you must toggle the switch to the I2C mode \
-![](https://preview.ibb.co/jdftL6/i2c_mode.png)
+![](extras/i2c_mode.png)
 2. Follow instructions (and picture) below to connect all components
 
 
@@ -69,6 +72,7 @@ Figure below shows all necessary components and the relation between them
 | Pin 3 (BCM 14 TXD)  |   YELLOW   |  TXD   |
 | Pin 5 (BCM 15 RXD)  |   GREEN    |  RXD   |
 
+![](extras/i2c-wiring.jpg)
 
 | Raspberry PI 2 B | Wire color |        Component         |
 | ---------------- | :--------: | :----------------------: |
@@ -76,8 +80,6 @@ Figure below shows all necessary components and the relation between them
 | Pin 13 (BCM 27)  |    BLUE    |    RED LED anode (+)     |
 | Pin 15 (BCM 22)  |   PURPLE   |    Diode #1 anode (+)    |
 | Pin 39 (Ground)  |   BLACK    | Breadboard negative rail |
-
-![](https://image.ibb.co/j6H7f6/20171122_114105.jpg)
 
 ## Software requirements
 
@@ -92,6 +94,7 @@ Figure below shows all necessary components and the relation between them
 	sudo apt-get install git build-essential autoconf libtool libpcsclite-dev
 	sudo apt-get install libusb-dev libcurl4-openssl-dev libjson-c-dev
 
+## Raspberry Pi 2B – UART
 ### Freeing [UART](https://www.raspberrypi.org/documentation/configuration/uart.md)
 
   sudo raspi-config
@@ -102,17 +105,20 @@ Figure below shows all necessary components and the relation between them
 - Select option A8 "Serial" and select **NO**
 - Finish and reboot: `sudo shutdown -r now`
 
+## Raspberry Pi 3B - I2C
 #### On the Raspberry PI 3 B running Raspbian Stretch
 
 - Select option 5 "Interface options"
 - Select option P6 "Serial", and select **NO**
 - Exit and reboot
 
-#### I2C instead of UART (Raspberry PI 3 B running Rasbian lite)
+#### I2C (Raspberry PI 3 B running Rasbian lite)
 
 - Select option 5 "Interface options"
 - Select option A7 "I2C", and select **YES**
 - Exit and reboot
+
+-----
 
 ### Installing libnfc from source
 
@@ -161,25 +167,36 @@ sudo systemctl stop hciuart
 - Save and reboot for changes to take effect.
 
 
-#### Run config & build
+##### Run config & build
 
 	autoreconf -vis
 	./configure --with-drivers=pn532_uart --sysconfdir=/etc --prefix=/usr
 	sudo make clean && sudo make install all
 
-#### Testing
+##### Testing
+
+###### Testing on Raspberry Pi 2B using UART
 
 You can test your setup reading an ISO14443-A card using `nfc-poll` program that came with `libnfc`. Place a card on the reader and run the command:
 
 
 	cd ~/libnfc/examples
 	./nfc-poll
+	
+###### Testing on Raspberry Pi 3B using I2C
 
 If you are using I2C, make sure your NFC was detected by using the following
 command `i2cdetect  -y 1`, you should get an output similar to the following
 image.
 
-![](https://image.ibb.co/esq2f6/nfc_addr.png)
+![](extras/nfc_addr.png)
+
+Then:
+
+```
+cd ~/libnfc/examples
+./nfc-poll
+```
 
 ### Installing wiringPi from source
 
@@ -196,6 +213,7 @@ image.
   - `make clean && make`
 4. Run it (sorry, you must be root because it is a requirement of wiringPi lib)
     - For instance: `sudo ./dist/Debug/GNU-MacOSX/doorlock_raspberrypi`
+
 
 ### Setting up FIDO UAF Demo Server and Android Apps
 
@@ -263,7 +281,13 @@ sudo update-rc.d supervisord.sh defaults
 - http://osoyoo.com/2017/07/20/pn532-nfc-rfid-module-for-raspberry-pi/
 - https://www.itead.cc/blog/raspberry-pi-drives-itead-pn532-nfc-module-with-libnfc
 
+Raspberry Pi 2B pinout
+
 ![alt text](pinout.png "Raspberry PI 2 B pinout")
+
+Raspberry Pi 3B pinout
+
+![alt text](extras/pinout3.png)
 
  ```
 
