@@ -20,37 +20,45 @@ Figure below shows all necessary components and the relation between them
 
 ## Hardware requirements
 
-- 01 [Raspberry PI 2 B](https://www.raspberrypi.org/products/raspberry-pi-2-model-b/)
-- 01 [Adafruit PN532](https://www.adafruit.com/products/364)
+- 01 [Raspberry PI 2 B](https://www.raspberrypi.org/products/raspberry-pi-2-model-b/) or 01 [Raspberry PI 3 B](https://www.raspberrypi.org/products/raspberry-pi-3-model-b/)
+- 01 [Adafruit PN532](https://www.adafruit.com/products/364) or 01 [Elechouse PN532 NFC RFID module V3](http://www.elechouse.com/elechouse/index.php?main_page=product_info&cPath=90_93&products_id=2242)
 - 01 Breadboard to connect raspberry and PN532
-- 01 N channel MOSFET - https://www.adafruit.com/products/355
-- 01 Lock-style solenoid - https://www.adafruit.com/product/1512
+- 01 [N channel MOSFET](https://www.adafruit.com/products/355)
+- 01 [Lock-style solenoid](https://www.adafruit.com/product/1512)
 - 02 Resistors - 300 Ohms
 - 02 LED (red and green)
-- 02 Diode 1N4001 - https://www.adafruit.com/product/755
-
-### Wiring Raspberry PI 2 B & PNB532
-
-1. To use UART on PNB532 breakout you must set to **OFF** the **SEL0** and **SEL1** jumpers
-2. Follow instructions (and picture) below to connect all components
+- 02 [Diode 1N4001](https://www.adafruit.com/product/755)
 
 
-| Raspberry PI 2 B    | Wire color | PNB532 |
-| ------------------- | :--------: | :----: |
-| Pin 2 (5v)          |    RED     |  5.0V  |
-| Pin 6 (ground)      |   BLACK    |  GND   |
-| Pin 8 (BCM 14 TXD)  |   YELLOW   |  TXD   |
-| Pin 10 (BCM 15 RXD) |   GREEN    |  RXD   |
+
+### Wiring Raspberry PI 2 B (or Raspberry PI 3 B) & PN532
+
+1. To use UART on [Adafruit PN532](https://www.adafruit.com/products/364) breakout you must set to **OFF** the **SEL0** and **SEL1** jumpers
+   1. To use UART on [Elechouse PN532 NFC RFID module V3](http://www.elechouse.com/elechouse/index.php?main_page=product_info&cPath=90_93&products_id=2242) you must set to **OFF** the **switch 1** and **switch 2**.
+2. Follow instructions (and pictures) below to connect all components
 
 
-![alt text](hw-wiring.png "Wiring raspberry PI 2 B & PNB532 & solenoid")
+| Raspberry PI (2 or 3) B | Wire color | Adafruit PN532 | Elechouse PN532 |
+| ----------------------- | :--------: | :------------: | :-------------: |
+| Pin 2 (5v)              |    RED     |      5.0V      |       VCC       |
+| Pin 6 (ground)          |   BLACK    |      GND       |       GND       |
+| Pin 8 (BCM 14 TXD)      |   YELLOW   |      RXD       |    SCL (RX)     |
+| Pin 10 (BCM 15 RXD)     |   GREEN    |      TXD       |    SDA (TX)     |
 
-| Raspberry PI 2 B | Wire color |        Component         |
-| ---------------- | :--------: | :----------------------: |
-| Pin 11 (BCM 17)  |   ORANGE   |   Green LED anode (+)    |
-| Pin 13 (BCM 27)  |    BLUE    |    RED LED anode (+)     |
-| Pin 15 (BCM 22)  |   PURPLE   |    Diode #1 anode (+)    |
-| Pin 39 (Ground)  |   BLACK    | Breadboard negative rail |
+| Raspberry PI 2 or 3 B | Wire color | Component on breadboard  |
+| --------------------- | :--------: | :----------------------: |
+| Pin 11 (BCM 17)       |   ORANGE   |   Green LED anode (+)    |
+| Pin 13 (BCM 27)       |    BLUE    |    RED LED anode (+)     |
+| Pin 15 (BCM 22)       |   PURPLE   |    Diode #1 anode (+)    |
+| Pin 39 (Ground)       |   BLACK    | Breadboard negative rail |
+
+![Using Adafruit PN532](hw-wiring.png "Wiring raspberry PI 2/3 B & Adafruit PNB532 & solenoid")
+
+
+
+Or, if you have an Elechouse PN532:
+
+![Using Elechousr PN532](hw-wiring-elechouse.png "Wiring raspberry PI 2/3 B & Elechouse PNB532 & solenoid")
 
 
 
@@ -67,20 +75,23 @@ Figure below shows all necessary components and the relation between them
 	sudo apt-get install git build-essential autoconf libtool libpcsclite-dev
 	sudo apt-get install libusb-dev libcurl4-openssl-dev libjson-c-dev
 
+
+
 ### Freeing [UART](https://www.raspberrypi.org/documentation/configuration/uart.md)
 
   sudo raspi-config
 
 #### On the Raspberry PI 2 B running Raspbian GNU/Linux 8
 
-- Select option 9 	"Advanced Options"
-- Select option A8 "Serial" and select **NO**
+- Select option  "Advanced Options"
+- Select option "Serial" and select **NO**
 - Finish and reboot: `sudo shutdown -r now`
 
 #### On the Raspberry PI 3 B running Raspbian Stretch
 
-- Select option 5 "Interface options"
-- Select option P6 "Serial", and select **NO**
+- Select option "Interface options"
+- Select option "Serial", and select **NO**
+  - Choose **YES** for *Would you like the serial port hardware to be enable?*  
 - Exit and reboot
 
 ### Installing libnfc from source
@@ -88,6 +99,7 @@ Figure below shows all necessary components and the relation between them
 ```cd ~ && sudo mkdir -p /etc/nfc/devices.d
 git clone https://github.com/nfc-tools/libnfc.git
 cd libnfc
+sudo mkdir -p /etc/nfc/devices.d/
 ```
 
 #### On the Raspberry PI 2 B
@@ -99,23 +111,6 @@ cd libnfc
 #### On the Raspberry PI 3 B
 
 `sudo cp contrib/libnfc/pn532_uart_on_rpi_3.conf.sample /etc/nfc/devices.d/pn532_uart_on_rpi_3.conf`
-
-and you have to:
-
-- enable uart on GPIO, add this line to bottom of `/boot/config.txt`
-
-  `enable_uart=1`
-- Stop and disable serial console:
-```
-sudo systemctl stop serial-getty@ttyS0.service
-sudo systemctl disable serial-getty@ttyS0.service
-```
-- Remove console from `/boot/cmdline.txt` by removing: 
-
-    `console=serial0,115200`
-
-- Save and reboot for changes to take effect.
-
 
 #### Run config & build
 
@@ -129,11 +124,18 @@ You can test your setup reading an ISO14443-A card using `nfc-poll` program that
 
 
 	cd ~/libnfc/examples
-	./nfc-poll
+	sudo ./nfc-poll
 
 ### Installing wiringPi from source
 
-- Please, follow the instructions provided by [official website](http://wiringpi.com/download-and-install).
+- Please, follow the instructions provided by [official website](http://wiringpi.com/download-and-install). Or
+
+- ```
+  git clone git://git.drogon.net/wiringPi
+  cd ~/wiringPi
+  sudo ./build
+  ```
+
 
 
 
